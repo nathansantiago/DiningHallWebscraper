@@ -53,14 +53,29 @@ for entry in soups:
 
     html_recipes.append(soup)
 
-current_soup = html_recipes[0]
-
-output = current_soup.find_all("th")
-
+# Loop over every menu item
+all_soups = []
+all_item_names = []
 text_output = []
-for item in output:
-    text_output.append(re.split('(\d.+)', item.text.replace(" ", "").replace("\n", ""))[0:2])
 
-output_dict = {}
-for entry in text_output:
-    output_dict[entry[0]] = entry[1]
+for current_soup in html_recipes:
+    output = current_soup.find_all("th")
+    all_item_names.append(current_soup.find("h2").text)
+    for item in output:
+        text_output.append(re.split('(\d.+)', item.text.replace(" ", "").replace("\n", ""))[0:2])
+    all_soups.append(text_output)  # Appends the item nutrition array to the list of all items
+
+for items in all_soups: # all item nutrition lists
+    output_dict = {}
+    all_nutrition_lists = []
+    final_output = {}
+    for entry in items:
+        try:
+            output_dict[entry[0]] = entry[1]
+            all_nutrition_lists.append(output_dict)
+        except:
+            all_nutrition_lists.append("error")
+    x = 0
+    for item_name in all_item_names:
+        final_output[item_name] = all_nutrition_lists[x]
+        x += 1
